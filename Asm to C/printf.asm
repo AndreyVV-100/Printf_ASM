@@ -10,28 +10,40 @@
     inc rdx
 %endmacro
 
-section .text 
+section .text  
+
+global Printf
+extern main
 global _start
 
-_start:
+; _start:
 
-    push 0xEDA
-    push 0xEDA
-    push StrTest
-    push 'y'
-    push 'x'
-    push 0xEDA
-    push Msg
-    call Printf
-    add rsp, 56
+;     push 0xEDA
+;     push 0xEDA
+;     push StrTest
+;     push 'y'
+;     push 'x'
+;     push 0xEDA
+;     push Msg
+;     call Printf
+;     add rsp, 56
 
-    mov rax, 0x3C
-    xor rdi, rdi
-    syscall
+;     mov rax, 0x3C
+;     xor rdi, rdi
+;     syscall
 
 ;---------------------------------------
 
 Printf:
+
+    pop rax
+    push r9
+    push r8
+    push rcx
+    push rdx
+    push rsi
+    push rdi
+    push rax
 
     push rbp 
     mov  rbp, rsp
@@ -70,7 +82,11 @@ Printf:
 
     Printf_end:
     call Drop_Buf
+
     pop rbp
+    pop rax
+    add rsp, 48
+    push rax
     ret
 
 ;---------------------------------------
@@ -302,15 +318,11 @@ section .data
 
 SizeOfPush: equ 8
 
-Msg:    db "azaz %x %c%c\a \t%s \n x%gx %d %o azaz инфа 100%%", 0x0a, 0
-
 Buf:    times 256 db '0'
 BufLen: equ $ - Buf
 
 ShrShift: db 0
 NumMask:  db 0
-
-StrTest: db "Ахахаха быдло отсеялось, лол кек чебурек!!!! Ахахахаахахахахахаха", 0
 
 ListOfDigits: db '0123456789ABCDEF'
 
